@@ -19,14 +19,20 @@ interface TaskCardProps {
     createdBy?: string;
 }
 
+function handleDragStart(event: React.DragEvent<HTMLDivElement>, title :string) {
+    event.dataTransfer.setData('text/plain', title);
+}
+
+
 export default (({title, description, ...props }: TaskCardProps) => (
-    <Card className="my-4 p-2 border-2 border-gray-300 w-full">
+    <Card className="my-4 p-2 border-2 border-gray-300 w-full" draggable onDragStart={(event) => handleDragStart(event, title)} >
         <CardContent>
             <Typography variant={"h3"}>{title}</Typography>
             <Typography variant={"body1"}>{description}</Typography>
-            { Object.entries(props).map( ([key, value]) =>
+            { Object.entries(props).filter( ([key]) => key !== 'statusChange')
+                    .map( ([key, value]) =>
                     <div key={key}>
-                        <Typography variant={"h4"}>{key}</Typography>: <Typography variant={"body2"}>{String(value)}</Typography>
+                        <Typography variant={"body1"}>{String(key).toUpperCase()}: {String(value)}</Typography>
                     </div>
             )}
         </CardContent>
