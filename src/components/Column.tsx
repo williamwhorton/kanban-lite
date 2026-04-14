@@ -11,7 +11,6 @@ function handleDrop(event: React.DragEvent<HTMLDivElement>, callback?: (title: s
     const title = event.dataTransfer.getData('text/plain');
     event.dataTransfer.setData('text/plain', event.currentTarget.dataset.status || 'no status');
     callback && callback(title, event.currentTarget.dataset.status as 'pending' | 'in-progress' | 'completed');
-    console.log('Dropped: ', title, ' with status: ', event.currentTarget.dataset.status);
 }
 
 export default function Column({title, status, children, updateColumn}: {

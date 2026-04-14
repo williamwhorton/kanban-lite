@@ -2,26 +2,27 @@ import './App.css'
 import {Container, Grid, Typography} from "@mui/material";
 import Column from "./components/Column.tsx";
 import TaskCard from "./components/TaskCard.tsx";
-import {useState} from "react";
+import useTasks from "./hooks/useTasks.ts";
+
+
+export type Task = {
+    id?: number;
+    title: string;
+    description: string;
+    status: 'pending' | 'in-progress' | 'completed';
+    dueDate?: Date;
+    priority?: 'low' | 'medium' | 'high';
+    assignedTo?: string;
+    assignedBy?: string;
+    tags?: string[];
+    createdAt?: Date;
+    updatedAt?: Date;
+    createdBy?: string;
+}
 
 function App() {
 
-    interface Task {
-        id?: number;
-        title: string;
-        description: string;
-        status: 'pending' | 'in-progress' | 'completed';
-        dueDate?: Date;
-        priority?: 'low' | 'medium' | 'high';
-        assignedTo?: string;
-        assignedBy?: string;
-        tags?: string[];
-        createdAt?: Date;
-        updatedAt?: Date;
-        createdBy?: string;
-    }
-
-    const [tasks, setTasks] = useState<Task[]>([
+    const initialState :Task[] = [
         {
             title: "Task 1",
             description: "This is a sample task.",
@@ -72,7 +73,9 @@ function App() {
             description: "This is a tenth sample task.",
             status: 'completed'
         },
-    ]);
+    ];
+
+    const { tasks, addTask, editTask, moveTask, deleteTask } = useTasks(initialState);
 
     const toDoTasks = tasks.filter(task => task.status === 'pending');
 
@@ -80,16 +83,8 @@ function App() {
 
     const doneTasks = tasks.filter(task => task.status === 'completed');
 
-    function findTask(title: string) {
-        return tasks.find(task => task.title === title);
-    }
-
     function updateStatus(title: string, newStatus: 'pending' | 'in-progress' | 'completed') {
-        let currentTask :Task | undefined = findTask(title);
-        if ( newStatus !== currentTask?.status && currentTask) {
-            currentTask.status = newStatus;
-            setTasks([currentTask, ...tasks.filter(t => t.title !== title)]);
-        }
+            moveTask(title, newStatus);
     }
 
   return (
