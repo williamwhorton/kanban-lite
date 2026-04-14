@@ -9,7 +9,7 @@ function taskReducer(state: any[], action: { type: any; payload: any }) {
         case 'EDIT_TASK':
             return state.map(task => task.id === action.payload.id ? action.payload : task);
         case 'DELETE_TASK':
-            return state.filter(task => task.id !== action.payload);
+            return state.filter(task => task.title !== action.payload);
         case 'MOVE_TASK':
             const {taskTitle, newStatus} = action.payload;
             return state.map(task => task.title === taskTitle ? {...task, status: newStatus} : task);
@@ -29,8 +29,8 @@ export default (initialState :Task[] = []) => {
         dispatch({type: 'EDIT_TASK', payload: task})
     }
 
-    const deleteTask = (taskId :string) => {
-        dispatch({type: 'DELETE_TASK', payload: taskId})
+    const deleteTask = (taskTitle :string) => {
+        dispatch({type: 'DELETE_TASK', payload: taskTitle})
     }
 
     const moveTask = (taskTitle :string, newStatus :'pending' | 'in-progress' | 'completed') => {

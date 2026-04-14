@@ -3,7 +3,8 @@ import {Container, Grid, Typography} from "@mui/material";
 import Column from "./components/Column.tsx";
 import TaskCard from "./components/TaskCard.tsx";
 import useTasks from "./hooks/useTasks.ts";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
+import TaskModal from "./components/TaskModal.tsx";
 
 
 export type Task = {
@@ -78,13 +79,10 @@ function App() {
 
     const initialState = JSON.parse(localStorage.getItem('tasks') || JSON.stringify(initialStateArr));
 
-
-
     const { tasks, addTask, editTask, moveTask, deleteTask } = useTasks(initialState);
     useEffect(() => {
         localStorage.setItem('tasks', JSON.stringify(tasks))
     }, [tasks])
-
 
     const toDoTasks = tasks.filter(task => task.status === 'pending');
 
@@ -92,15 +90,17 @@ function App() {
 
     const doneTasks = tasks.filter(task => task.status === 'completed');
 
+    const [modalOpen, setModalOpen] = useState(false);
+
   return (
     <Container maxWidth="xl">
       <Typography variant="h1">Kanban Lite</Typography>
       <Grid container spacing={2}>
         <Grid size={4} data-status="pending" >
-          <Column title="To Do" status="pending" updateColumn={(title, status : 'pending' | 'in-progress' | 'completed') => moveTask(title, status)}>
+          <Column title="To Do" status="pending" updateColumn={(title, status : 'pending' | 'in-progress' | 'completed') => moveTask(title, status)} addModal={() => setModalOpen(true)} >
               <>
               {toDoTasks.map((task, index) => (
-                  <TaskCard key={index} title={task.title} description={task.description} status={task.status} />
+                  <TaskCard key={index} title={task.title} description={task.description} status={task.status} deleteTask={deleteTask} />
               ))}
               </>
           </Column>
@@ -109,7 +109,7 @@ function App() {
           <Column title="In Progress" status="in-progress" updateColumn={(title, status : 'pending' | 'in-progress' | 'completed') => moveTask(title, status)}>
               <>
               {inProgressTasks.map((task, index) => (
-                  <TaskCard key={index} title={task.title} description={task.description} status={task.status} />
+                  <TaskCard key={index} title={task.title} description={task.description} status={task.status} deleteTask={deleteTask}  />
               ))}
               </>
           </Column>
@@ -118,12 +118,13 @@ function App() {
           <Column title="Done" status="completed" updateColumn={(title, status : 'pending' | 'in-progress' | 'completed') => moveTask(title, status)}>
               <>
                   {doneTasks.map((task, index) => (
-                      <TaskCard key={index} title={task.title} description={task.description} status={task.status} />
+                      <TaskCard key={index} title={task.title} description={task.description} status={task.status} deleteTask={deleteTask} editTask={editTask} />
                   ))}
               </>
           </Column>
         </Grid>
       </Grid>
+        <TaskModal modalOpen={modalOpen} setModalOpen={setModalOpen} addTask={addTask} />
     </Container>
   )
 }
