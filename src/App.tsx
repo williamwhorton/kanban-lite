@@ -3,6 +3,7 @@ import {Container, Grid, Typography} from "@mui/material";
 import Column from "./components/Column.tsx";
 import TaskCard from "./components/TaskCard.tsx";
 import useTasks from "./hooks/useTasks.ts";
+import {useEffect} from "react";
 
 
 export type Task = {
@@ -22,7 +23,7 @@ export type Task = {
 
 function App() {
 
-    const initialState :Task[] = [
+    const initialStateArr :Task[] = [
         {
             title: "Task 1",
             description: "This is a sample task.",
@@ -75,7 +76,15 @@ function App() {
         },
     ];
 
+    const initialState = JSON.parse(localStorage.getItem('tasks') || JSON.stringify(initialStateArr));
+
+
+
     const { tasks, addTask, editTask, moveTask, deleteTask } = useTasks(initialState);
+    useEffect(() => {
+        localStorage.setItem('tasks', JSON.stringify(tasks))
+    }, [tasks])
+
 
     const toDoTasks = tasks.filter(task => task.status === 'pending');
 
@@ -83,16 +92,12 @@ function App() {
 
     const doneTasks = tasks.filter(task => task.status === 'completed');
 
-    function updateStatus(title: string, newStatus: 'pending' | 'in-progress' | 'completed') {
-            moveTask(title, newStatus);
-    }
-
   return (
     <Container maxWidth="xl">
       <Typography variant="h1">Kanban Lite</Typography>
       <Grid container spacing={2}>
         <Grid size={4} data-status="pending" >
-          <Column title="To Do" status="pending" updateColumn={(title, status : 'pending' | 'in-progress' | 'completed') => updateStatus(title, status)}>
+          <Column title="To Do" status="pending" updateColumn={(title, status : 'pending' | 'in-progress' | 'completed') => moveTask(title, status)}>
               <>
               {toDoTasks.map((task, index) => (
                   <TaskCard key={index} title={task.title} description={task.description} status={task.status} />
@@ -101,7 +106,7 @@ function App() {
           </Column>
         </Grid>
         <Grid size={4}>
-          <Column title="In Progress" status="in-progress" updateColumn={(title, status : 'pending' | 'in-progress' | 'completed') => updateStatus(title, status)}>
+          <Column title="In Progress" status="in-progress" updateColumn={(title, status : 'pending' | 'in-progress' | 'completed') => moveTask(title, status)}>
               <>
               {inProgressTasks.map((task, index) => (
                   <TaskCard key={index} title={task.title} description={task.description} status={task.status} />
@@ -110,7 +115,7 @@ function App() {
           </Column>
         </Grid>
         <Grid size={4}>
-          <Column title="Done" status="completed" updateColumn={(title, status : 'pending' | 'in-progress' | 'completed') => updateStatus(title, status)}>
+          <Column title="Done" status="completed" updateColumn={(title, status : 'pending' | 'in-progress' | 'completed') => moveTask(title, status)}>
               <>
                   {doneTasks.map((task, index) => (
                       <TaskCard key={index} title={task.title} description={task.description} status={task.status} />
