@@ -1,0 +1,44 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: kanban-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: kanban_user
+      POSTGRES_PASSWORD: kanban_pass
+      POSTGRES_DB: kanban_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  api:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: kanban-api
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: postgres://kanban_user:kanban_pass@db:5432/kanban_db
+    depends_on:
+      - db
+    expose:
+      - "3000"
+
+  web:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: kanban-web
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "80:80"
+
+volumes:
+  postgres_data:

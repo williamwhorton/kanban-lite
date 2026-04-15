@@ -58,6 +58,7 @@ export default (({id, title, description, status, deleteTask, editTask, ...props
                     </>
                 }/>
                 <Typography variant={"body1"}>{description}</Typography>
+                <Typography variant={"body1"}>Status: {status}</Typography>
                 {Object.entries(props).filter(([key]) => key !== 'deleteTask' && key !== 'editTask' && key !== 'setModalOpen' && key !== 'id')
                     .map(([key, value]) =>
                         <div key={key}>
