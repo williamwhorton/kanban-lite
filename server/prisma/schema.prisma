@@ -1,0 +1,15 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model tasks {
+  task_id     Int     @id(map: "tasks_pk") @unique(map: "tasks_pk_2") @default(autoincrement())
+  title       String?
+  description String?
+  status      String?
+}

@@ -122,6 +122,7 @@ function App() {
   return (
     <Container maxWidth="xl">
       <Typography variant="h1">Kanban Lite</Typography>
+        <Typography variant="subtitle1">Now with Containers!</Typography>
         <button onClick={clearLocalStorage}>Clear Local Storage</button>
       <Grid container spacing={2}>
         <Grid size={4} data-status="pending" >

@@ -22,8 +22,6 @@ services:
       NODE_ENV: production
       PORT: 3000
       DATABASE_URL: postgres://kanban_user:kanban_pass@db:5432/kanban_db
-    ports:
-      - "3000:3000"
     depends_on:
       - db
     expose:
@@ -32,33 +30,10 @@ services:
   web:
     build:
       context: ./client
-      dockerfile: Dockerfile
+      dockerfile: client/Dockerfile.prod
     container_name: kanban-web
     restart: unless-stopped
-    working_dir: /app
     depends_on:
       - api
     ports:
-      - "5173:5173"
-    environment:
-      CHOKIDAR_USEPOLLING: "true"
-    command: bun run dev -- --host 0.0.0.0
-    develop:
-      watch:
-        - action: sync
-          path: ./client/src
-          target: /app/src
-        - action: sync
-          path: ./client/public
-          target: /app/public
-        - action: sync
-          path: ./client/index.html
-          target: /app/index.html
-        - action: rebuild
-          path: ./client/package.json
-        - action: rebuild
-          path: ./client/bun.lock
-
-
-volumes:
-  postgres_data:
+      - "8080:80"

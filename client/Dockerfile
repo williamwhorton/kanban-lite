@@ -1,18 +1,14 @@
-FROM node:22-alpine AS builder
+FROM node:22-alpine
 
 WORKDIR /app
 
+RUN npm install -g bun
+
 COPY package.json bun.lock ./
-RUN npm install -g bun && bun install
+RUN bun install
 
 COPY . .
-RUN bun run build
 
-FROM nginx:1.27-alpine
+EXPOSE 5173
 
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-COPY --from=builder /app/dist /usr/share/nginx/html
-
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["bun", "run", "dev", "--", "--host", "0.0.0.0"]
