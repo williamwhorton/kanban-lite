@@ -9,10 +9,10 @@ function taskReducer(state: any[], action: { type: any; payload: any }) {
         case 'EDIT_TASK':
             return state.map(task => task.id === action.payload.id ? action.payload : task);
         case 'DELETE_TASK':
-            return state.filter(task => task.title !== action.payload);
+            return state.filter(task => task.id !== action.payload);
         case 'MOVE_TASK':
-            const {taskTitle, newStatus} = action.payload;
-            return state.map(task => task.title === taskTitle ? {...task, status: newStatus} : task);
+            const {taskId, newStatus} = action.payload;
+            return state.map(task => task.id === taskId ? {...task, status: newStatus} : task);
         default:
             return state;
     }
@@ -29,12 +29,12 @@ export default (initialState :Task[] = []) => {
         dispatch({type: 'EDIT_TASK', payload: task})
     }
 
-    const deleteTask = (taskTitle :string) => {
-        dispatch({type: 'DELETE_TASK', payload: taskTitle})
+    const deleteTask = (taskId :number) => {
+        dispatch({type: 'DELETE_TASK', payload: taskId})
     }
 
-    const moveTask = (taskTitle :string, newStatus :'pending' | 'in-progress' | 'completed') => {
-        dispatch({type: 'MOVE_TASK', payload: {taskTitle, newStatus}})
+    const moveTask = (taskId :number, newStatus :'pending' | 'in-progress' | 'completed') => {
+        dispatch({type: 'MOVE_TASK', payload: {taskId, newStatus}})
     }
 
     return {tasks, addTask, editTask, deleteTask, moveTask};

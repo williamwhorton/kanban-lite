@@ -1,18 +1,19 @@
 import {Box, Dialog, TextField, Typography} from "@mui/material";
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import type {Task} from "../App.tsx";
 
 
-export default function TaskModal({modalOpen, setModalOpen, addTask}: { modalOpen: boolean, setModalOpen: (open: boolean) => void, addTask: (task: any) => void}) {
+export default function TaskModal({modalOpen, setModalOpen, addTask, editTask, taskToEdit}: { modalOpen: boolean, setModalOpen: (open: boolean) => void, addTask: (task: any) => void, editTask: (task: any) => void, taskToEdit: Task | { title: string, description: string, status: 'pending' | 'in-progress' | 'completed'} | null}  ) {
 
-    const [task, setTask] = useState( {
-        title: '',
-        description: '',
-        status: 'pending'
-    })
+    const [task, setTask] = useState({title: '', description: '', status: 'pending'});
+
+    useEffect(() => {
+        setTask(taskToEdit ? {...taskToEdit} : {title: '', description: '', status: 'pending'});
+    },[taskToEdit, modalOpen])
 
     function handleAddClick(event: any) {
         event.preventDefault();
-        addTask(task);
+        (taskToEdit) ? editTask(task) : addTask(task);
         setModalOpen(false);
     }
 
@@ -24,25 +25,25 @@ export default function TaskModal({modalOpen, setModalOpen, addTask}: { modalOpe
 
     return (
         <Dialog open={modalOpen} onClose={() => setModalOpen(false)}>
-            <Box sx={{ width: 200 }} >
-                <Typography variant="h2">Add Task</Typography>
+            <Box>
+                <Typography variant="h2">{ taskToEdit ? 'Edit Task' : 'Add Task' }</Typography>
                 <TextField
                     label="Task Title"
                     name="title"
                     variant="outlined"
-                    value={task.title}
+                    value={task?.title}
                     fullWidth
                     onChange={handleInputChange}
                 />
                 <TextField
                     label="Task Description"
                     variant="outlined"
-                    value={task.description}
+                    value={task?.description}
                     name="description"
                     fullWidth
                     onChange={handleInputChange}
                 />
-                <button onClick={(event) => handleAddClick(event)}>Add Task</button>
+                <button onClick={(event) => handleAddClick(event)}>{ taskToEdit ? 'Edit Task' : 'Add Task' }</button>
             </Box>
         </Dialog>
     )

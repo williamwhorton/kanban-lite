@@ -8,12 +8,12 @@ import * as React from "react";
 
 
 interface TaskCardProps {
+    id: number;
     title: string;
     description: string;
     completed?: boolean;
     dueDate?: Date;
     priority?: 'low' | 'medium' | 'high';
-    id?: string;
     createdAt?: Date;
     updatedAt?: Date;
     assignedTo?: string;
@@ -21,42 +21,44 @@ interface TaskCardProps {
     status?: 'pending' | 'in-progress' | 'completed';
     tags?: string[];
     createdBy?: string;
-    deleteTask?: (title: string) => void;
+    deleteTask?: (id: number) => void;
     editTask?: (task: any) => void;
+    setModalOpen?: () => void;
 }
 
 
-export default (({title, description, deleteTask, ...props}: TaskCardProps) => {
+export default (({id, title, description, deleteTask, editTask, ...props}: TaskCardProps) => {
 
-    function handleDragStart(event: React.DragEvent<HTMLDivElement>, title: string) {
-        event.dataTransfer.setData('text/plain', title);
+    function handleDragStart(event: React.DragEvent<HTMLDivElement>, id: number) {
+        event.dataTransfer.setData('text/plain', id.toString(10));
     }
 
-    function handleDeleteClick(event: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>, taskTitle: string) {
+    function handleDeleteClick(event: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>, id: number) {
         event.preventDefault();
-        deleteTask && deleteTask(taskTitle);
+        deleteTask && deleteTask(id);
     }
 
-    function handleEdit() {
-
+    function handleEdit(event: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) {
+        event.preventDefault();
+        editTask && editTask({ id, title, description });
     }
 
     return (
         <Card className="my-4 p-2 border-2 border-gray-300 w-full" draggable
-              onDragStart={(event) => handleDragStart(event, title)}>
+              onDragStart={(event) => handleDragStart(event, id)}>
             <CardContent>
                 <CardHeader title={title} action={
                     <>
-                        <IconButton onClick={(event) => handleDeleteClick(event, title)}>
+                        <IconButton onClick={(event) => handleDeleteClick(event, id)}>
                             <DeleteIcon/>
                         </IconButton>
-                        <IconButton onClick={() => handleEdit()}>
+                        <IconButton onClick={(event) => handleEdit(event)}>
                             <EditIcon/>
                         </IconButton>
                     </>
                 }/>
                 <Typography variant={"body1"}>{description}</Typography>
-                {Object.entries(props).filter(([key]) => key !== 'statusChange')
+                {Object.entries(props).filter(([key]) => key !== 'deleteTask' && key !== 'editTask' && key !== 'setModalOpen' && key !== 'id')
                     .map(([key, value]) =>
                         <div key={key}>
                             <Typography variant={"body1"}>{String(key).toUpperCase()}: {String(value)}</Typography>

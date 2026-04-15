@@ -10,7 +10,7 @@ export default function Column({title, status, children, updateColumn, ...props}
     status: string,
     children?: JSX.Element,
     addModal?: () => void,
-    updateColumn?: (title: string, status: 'pending' | 'in-progress' | 'completed') => void
+    updateColumn?: (id: number, status: 'pending' | 'in-progress' | 'completed') => void
 }) {
 
     function handleDragOver(event: React.DragEvent<HTMLDivElement>) {
@@ -18,11 +18,11 @@ export default function Column({title, status, children, updateColumn, ...props}
         event.dataTransfer.dropEffect = 'move';
     }
 
-    function handleDrop(event: React.DragEvent<HTMLDivElement>, callback?: (title: string, status: 'pending' | 'in-progress' | 'completed') => void) {
+    function handleDrop(event: React.DragEvent<HTMLDivElement>, callback?: (id: number, status: 'pending' | 'in-progress' | 'completed') => void) {
         event.preventDefault();
-        const title = event.dataTransfer.getData('text/plain');
+        const id: number = parseInt(event.dataTransfer.getData('text/plain'));
         event.dataTransfer.setData('text/plain', event.currentTarget.dataset.status || 'no status');
-        callback && callback(title, event.currentTarget.dataset.status as 'pending' | 'in-progress' | 'completed');
+        callback && callback(id, event.currentTarget.dataset.status as 'pending' | 'in-progress' | 'completed');
     }
 
     function toggleAddModal(event: any) {
@@ -35,9 +35,9 @@ export default function Column({title, status, children, updateColumn, ...props}
     <div className="flex flex-col items-center justify-center border-2 border-gray-300" onDragOver={handleDragOver} onDrop={(event) => handleDrop(event, updateColumn)} data-status={status}>
       <div className="flex flex-col items-center justify-center w-full">
               <div className="w-full bg-gray-200 p-4">
-            <h2 className="text-4xl font-bold">{title}</h2>
+            <h2 className="text-4xl font-bold float-left">{title}</h2>
                   {props.addModal &&
-                      <IconButton onClick={(event) => toggleAddModal(event)} >
+                      <IconButton className="float-right" onClick={(event) => toggleAddModal(event)} >
                       <AddIcon /></IconButton>
                   }
           </div>
