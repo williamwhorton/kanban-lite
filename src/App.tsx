@@ -110,6 +110,7 @@ function App() {
     }
     function openEditModal(task: Task) {
         setTaskToEdit(task);
+        console.log(task);
         setModalOpen(true);
     }
 

@@ -11,6 +11,7 @@ interface TaskCardProps {
     id: number;
     title: string;
     description: string;
+    status: 'pending' | 'in-progress' | 'completed';
     completed?: boolean;
     dueDate?: Date;
     priority?: 'low' | 'medium' | 'high';
@@ -18,7 +19,6 @@ interface TaskCardProps {
     updatedAt?: Date;
     assignedTo?: string;
     assignedBy?: string;
-    status?: 'pending' | 'in-progress' | 'completed';
     tags?: string[];
     createdBy?: string;
     deleteTask?: (id: number) => void;
@@ -27,7 +27,7 @@ interface TaskCardProps {
 }
 
 
-export default (({id, title, description, deleteTask, editTask, ...props}: TaskCardProps) => {
+export default (({id, title, description, status, deleteTask, editTask, ...props}: TaskCardProps) => {
 
     function handleDragStart(event: React.DragEvent<HTMLDivElement>, id: number) {
         event.dataTransfer.setData('text/plain', id.toString(10));
@@ -40,7 +40,7 @@ export default (({id, title, description, deleteTask, editTask, ...props}: TaskC
 
     function handleEdit(event: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) {
         event.preventDefault();
-        editTask && editTask({ id, title, description });
+        editTask && editTask({ id, title, description, status });
     }
 
     return (
