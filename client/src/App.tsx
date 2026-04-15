@@ -24,82 +24,17 @@ export type Task = {
 
 function App() {
 
-    const initialStateArr :Task[] = [
-        {
-            id: 1,
-            title: "Task 1",
-            description: "This is a sample task.",
-            status: 'pending'
-        },
-        {
-            id: 2,
-            title: "Task 2",
-            description: "This is another sample task.",
-            status: 'pending'
-        },
-        {
-            id: 3,
-            title: "Task 3",
-            description: "This is a third sample task.",
-            status: 'pending'
-        },
-        {
-            id: 4,
-            title: "Task 4",
-            description: "This is a fourth sample task.",
-            status: 'in-progress'
-        },
-        {
-            id: 5,
-            title: "Task 5",
-            description: "This is a fifth sample task.",
-            status: 'in-progress'
-        },
-        {
-            id: 6,
-            title: "Task 6",
-            description: "This is a sixth sample task.",
-            status: 'in-progress'
-        },
-        {
-            id: 7,
-            title: "Task 7",
-            description: "This is a seventh sample task.",
-            status: 'completed'
-        },
-        {
-            id: 8,
-            title: "Task 8",
-            description: "This is an eighth sample task.",
-            status: 'completed'
-        },
-        {
-            id: 9,
-            title: "Task 9",
-            description: "This is a ninth sample task.",
-            status: 'completed'
-        },
-        {
-            id: 10,
-            title: "Task 10",
-            description: "This is a tenth sample task.",
-            status: 'completed'
-        },
-    ];
-
-    const initialState = JSON.parse(localStorage.getItem('tasks') || JSON.stringify(initialStateArr));
-
-    const { tasks, addTask, editTask, moveTask, deleteTask } = useTasks(initialState);
+    const { tasks, addTask, editTask, moveTask, deleteTask } = useTasks();
 
     useEffect(() => {
         localStorage.setItem('tasks', JSON.stringify(tasks))
     }, [tasks])
 
-    const toDoTasks = tasks.filter(task => task.status === 'pending');
+    const toDoTasks = tasks?.filter(task => task.status === 'pending');
 
-    const inProgressTasks = tasks.filter(task => task.status === 'in-progress');
+    const inProgressTasks = tasks?.filter(task => task.status === 'in-progress');
 
-    const doneTasks = tasks.filter(task => task.status === 'completed');
+    const doneTasks = tasks?.filter(task => task.status === 'completed');
 
     const [modalOpen, setModalOpen] = useState(false);
     const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
@@ -126,27 +61,27 @@ function App() {
         <button onClick={clearLocalStorage}>Clear Local Storage</button>
       <Grid container spacing={2}>
         <Grid size={4} data-status="pending" >
-          <Column title="To Do" status="pending" updateColumn={(id :number, status : 'pending' | 'in-progress' | 'completed') => moveTask(id, status)} addModal={openAddModal} >
+          <Column title="To Do" status="pending" updateColumn={(id :number, status : 'pending' | 'in-progress' | 'completed') => moveTask({id, status})} addModal={openAddModal} >
               <>
-              {toDoTasks.map((task) => (
+              {toDoTasks?.map((task) => (
                   <TaskCard key={task.id} id={task.id} title={task.title} description={task.description} status={task.status} deleteTask={deleteTask} editTask={openEditModal}  />
               ))}
               </>
           </Column>
         </Grid>
         <Grid size={4}>
-          <Column title="In Progress" status="in-progress" updateColumn={(title, status : 'pending' | 'in-progress' | 'completed') => moveTask(title, status)}>
+          <Column title="In Progress" status="in-progress" updateColumn={(id, status : 'pending' | 'in-progress' | 'completed') => moveTask({id, status})}>
               <>
-              {inProgressTasks.map((task) => (
+              {inProgressTasks?.map((task) => (
                   <TaskCard key={task.id} id={task.id} title={task.title} description={task.description} status={task.status} deleteTask={deleteTask} editTask={openEditModal} />
               ))}
               </>
           </Column>
         </Grid>
         <Grid size={4}>
-          <Column title="Done" status="completed" updateColumn={(title, status : 'pending' | 'in-progress' | 'completed') => moveTask(title, status)}>
+          <Column title="Done" status="completed" updateColumn={(id, status : 'pending' | 'in-progress' | 'completed') => moveTask({id, status})}>
               <>
-                  {doneTasks.map((task) => (
+                  {doneTasks?.map((task) => (
                       <TaskCard key={task.id} id={task.id} title={task.title} description={task.description} status={task.status} deleteTask={deleteTask} editTask={openEditModal} />
                   ))}
               </>

@@ -18,25 +18,25 @@ export type CreateTaskInput = {
 export type UpdateTaskInput = Partial<CreateTaskInput>;
 
 export function getTasks() {
-    return request<Task[]>("/api/tasks");
+    return request<Task[]>("/tasks");
 }
 
 export function createTask(data: CreateTaskInput) {
-    return request<Task>("/api/tasks", {
+    return request<Task>("/tasks", {
         method: "POST",
         body: JSON.stringify(data),
     });
 }
 
 export function updateTask(id: number, data: UpdateTaskInput) {
-    return request<Task>(`/api/tasks/${id}`, {
+    return request<Task>(`/tasks/${id}`, {
         method: "PUT",
         body: JSON.stringify(data),
     });
 }
 
 export function deleteTask(id: number) {
-    return request<void>(`/api/tasks/${id}`, {
+    return request<void>(`/tasks/${id}`, {
         method: "DELETE",
     });
 }
