@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllTasks, getTaskById, createTask, updateTask, deleteTask } from '../services/taskService';
+import {getAllTasks, getTaskById, createTask, updateTask, deleteTask, moveTask} from '../services/taskService';
 
 const router = Router();
 
@@ -15,7 +15,11 @@ router.post('/', (req, res, next) => {
 });
 
 router.put('/:id', (req, res, next) => {
-    updateTask(parseInt(req.params.id), req.body).then(task => res.send(task));
+    updateTask(req.body).then(task => res.send(task));
+});
+
+router.put('/move/:id', (req, res, next) => {
+    moveTask(parseInt(req.params.id), req.body.status).then((task: any) => res.send(task));
 });
 
 router.delete('/:id', (req, res, next) => {

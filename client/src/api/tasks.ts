@@ -1,21 +1,13 @@
 import { request } from "./http";
+import { type Task } from "../App";
 
 export type TaskStatus = "pending" | "in-progress" | "completed";
-
-export type Task = {
-    id: number;
-    title: string;
-    description: string;
-    status: TaskStatus;
-};
 
 export type CreateTaskInput = {
     title: string;
     description: string;
     status: TaskStatus;
 };
-
-export type UpdateTaskInput = Partial<CreateTaskInput>;
 
 export function getTasks() {
     return request<Task[]>("/tasks");
@@ -28,15 +20,22 @@ export function createTask(data: CreateTaskInput) {
     });
 }
 
-export function updateTask(id: number, data: UpdateTaskInput) {
-    return request<Task>(`/tasks/${id}`, {
+export function updateTask(task :Task) {
+    return request<Task>(`/tasks/${task.task_id}`, {
         method: "PUT",
-        body: JSON.stringify(data),
+        body: JSON.stringify(task),
     });
 }
 
-export function deleteTask(id: number) {
-    return request<void>(`/tasks/${id}`, {
+export function deleteTask(task_id: number) {
+    return request<void>(`/tasks/${task_id}`, {
         method: "DELETE",
+    });
+}
+
+export function moveTask(task_id: number, data: { status: TaskStatus }) {
+    return request<Task>(`/tasks/move/${task_id}`, {
+        method: "PUT",
+        body: JSON.stringify(data),
     });
 }

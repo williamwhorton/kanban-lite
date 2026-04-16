@@ -8,7 +8,7 @@ import TaskModal from "./components/TaskModal.tsx";
 
 
 export type Task = {
-    id: number;
+    task_id: number;
     title: string;
     description: string;
     status: 'pending' | 'in-progress' | 'completed';
@@ -45,7 +45,6 @@ function App() {
     }
     function openEditModal(task: Task) {
         setTaskToEdit(task);
-        console.log(task);
         setModalOpen(true);
     }
 
@@ -61,28 +60,28 @@ function App() {
         <button onClick={clearLocalStorage}>Clear Local Storage</button>
       <Grid container spacing={2}>
         <Grid size={4} data-status="pending" >
-          <Column title="To Do" status="pending" updateColumn={(id :number, status : 'pending' | 'in-progress' | 'completed') => moveTask({id, status})} addModal={openAddModal} >
+          <Column title="To Do" status="pending" updateColumn={(task_id :number, status : 'pending' | 'in-progress' | 'completed') => moveTask({task_id, status})} addModal={openAddModal} >
               <>
               {toDoTasks?.map((task) => (
-                  <TaskCard key={task.id} id={task.id} title={task.title} description={task.description} status={task.status} deleteTask={deleteTask} editTask={openEditModal}  />
+                  <TaskCard key={task.task_id} task_id={task.task_id} title={task.title} description={task.description} status={task.status} deleteTask={deleteTask} editTask={openEditModal}  />
               ))}
               </>
           </Column>
         </Grid>
         <Grid size={4}>
-          <Column title="In Progress" status="in-progress" updateColumn={(id, status : 'pending' | 'in-progress' | 'completed') => moveTask({id, status})}>
+          <Column title="In Progress" status="in-progress" updateColumn={(task_id, status : 'pending' | 'in-progress' | 'completed') => moveTask({task_id, status})}>
               <>
               {inProgressTasks?.map((task) => (
-                  <TaskCard key={task.id} id={task.id} title={task.title} description={task.description} status={task.status} deleteTask={deleteTask} editTask={openEditModal} />
+                  <TaskCard key={task.task_id} task_id={task.task_id} title={task.title} description={task.description} status={task.status} deleteTask={deleteTask} editTask={openEditModal} />
               ))}
               </>
           </Column>
         </Grid>
         <Grid size={4}>
-          <Column title="Done" status="completed" updateColumn={(id, status : 'pending' | 'in-progress' | 'completed') => moveTask({id, status})}>
+          <Column title="Done" status="completed" updateColumn={(task_id, status : 'pending' | 'in-progress' | 'completed') => moveTask({task_id, status})}>
               <>
                   {doneTasks?.map((task) => (
-                      <TaskCard key={task.id} id={task.id} title={task.title} description={task.description} status={task.status} deleteTask={deleteTask} editTask={openEditModal} />
+                      <TaskCard key={task.task_id} task_id={task.task_id} title={task.title} description={task.description} status={task.status} deleteTask={deleteTask} editTask={openEditModal} />
                   ))}
               </>
           </Column>

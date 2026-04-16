@@ -8,7 +8,7 @@ import * as React from "react";
 
 
 interface TaskCardProps {
-    id: number;
+    task_id: number;
     title: string;
     description: string;
     status: 'pending' | 'in-progress' | 'completed';
@@ -27,29 +27,29 @@ interface TaskCardProps {
 }
 
 
-export default (({id, title, description, status, deleteTask, editTask, ...props}: TaskCardProps) => {
+export default (({task_id, title, description, status, deleteTask, editTask, ...props}: TaskCardProps) => {
 
-    function handleDragStart(event: React.DragEvent<HTMLDivElement>, id: number) {
-        event.dataTransfer.setData('text/plain', id.toString(10));
+    function handleDragStart(event: React.DragEvent<HTMLDivElement>, task_id: number) {
+        event.dataTransfer.setData('text/plain', task_id.toString(10));
     }
 
-    function handleDeleteClick(event: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>, id: number) {
+    function handleDeleteClick(event: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>, task_id: number) {
         event.preventDefault();
-        deleteTask && deleteTask(id);
+        deleteTask && deleteTask(task_id);
     }
 
     function handleEdit(event: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) {
         event.preventDefault();
-        editTask && editTask({ id, title, description, status });
+        editTask && editTask({ task_id, title, description, status });
     }
 
     return (
         <Card className="my-4 p-2 border-2 border-gray-300 w-full" draggable
-              onDragStart={(event) => handleDragStart(event, id)}>
+              onDragStart={(event) => handleDragStart(event, task_id)}>
             <CardContent>
                 <CardHeader title={title} action={
                     <>
-                        <IconButton onClick={(event) => handleDeleteClick(event, id)}>
+                        <IconButton onClick={(event) => handleDeleteClick(event, task_id)}>
                             <DeleteIcon/>
                         </IconButton>
                         <IconButton onClick={(event) => handleEdit(event)}>
@@ -59,7 +59,7 @@ export default (({id, title, description, status, deleteTask, editTask, ...props
                 }/>
                 <Typography variant={"body1"}>{description}</Typography>
                 <Typography variant={"body1"}>Status: {status}</Typography>
-                {Object.entries(props).filter(([key]) => key !== 'deleteTask' && key !== 'editTask' && key !== 'setModalOpen' && key !== 'id')
+                {Object.entries(props).filter(([key]) => key !== 'deleteTask' && key !== 'editTask' && key !== 'setModalOpen' && key !== 'task_id')
                     .map(([key, value]) =>
                         <div key={key}>
                             <Typography variant={"body1"}>{String(key).toUpperCase()}: {String(value)}</Typography>
